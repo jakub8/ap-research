@@ -11,6 +11,7 @@ var hasWon = false;
 var ready = false;
 var currentNumber = 1;
 var misses = 0;
+var streak = 0;
 
 $(document).ready(function () {
 
@@ -92,6 +93,10 @@ $(document).ready(function () {
         var btnIndex = buttons.findIndex(function (element) {return element.valueOf() == btn.valueOf();});
         if (ready) {
             if(numbers[btnIndex] == currentNumber) {//sets it green if it is the right number
+                if(misses == 0) {
+                    streak++;
+                }
+                update("#directions", "Misses: " + misses.toString() + " Streak: " + streak.toString());
                 $(btn).css("background-color", "rgb(44, 211, 48)");
                 $(btn).css("color", "rgba(0, 0, 0, 1)");
                 update(btn, numbers[btnIndex].toString());
@@ -102,7 +107,7 @@ $(document).ready(function () {
                 }
             } else if ($(btn).css("background-color") != "rgb(44, 211, 48)"){//sets it red if it is the wrong number, but only if it is not already green
                 misses++;
-                update("#directions", "Misses: " + misses.toString());
+                update("#directions", "Misses: " + misses.toString() + " Streak: " + streak.toString());
                 $(btn).css("background-color", "#ff0000");
                 setTimeout(function () {if ($(btn).css("background-color") != "rgb(44, 211, 48)") {$(btn).css("background-color", "#e5e5e5");}}, 500); 
             }
