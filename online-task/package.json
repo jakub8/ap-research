@@ -1,0 +1,17 @@
+{
+    "name": "my_package",
+    "description": "",
+    "version": "1.0.0",
+    "main": "index.html",
+    "scripts": {
+      "name": "script.js"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/jakub8/ap-research"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "",
+    "homepage": "https://github.com/jakub8/ap-research"
+  }
