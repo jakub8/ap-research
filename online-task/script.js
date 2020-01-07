@@ -47,7 +47,7 @@ $(document).ready(function () {
         
         if (time >= 10000) {
             ready = true;
-            update("#directions", "Misses: " + misses.toString());
+            update("#directions", "Misses: " + misses.toString() + " Streak: " + streak.toString());
             $("#output").css("font-size", (10 * 0.25).toString() + "vw");
             //$("button").css("font-size", ($("button").width() * 0.15));
             $("button").css("color", "rgba(0, 0, 0, 0)");
