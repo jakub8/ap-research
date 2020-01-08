@@ -88,8 +88,8 @@ $(document).ready(function () {
     
 //------------click-----------click----------------click---------------------click----------------click--------------click-------------click----------
     $("button").click(function () {
-        var btn = "#" + $(this).attr('id');
-        var btnIndex = buttons.findIndex(function (element) {return element.valueOf() == btn.valueOf();});
+        var btn = "#" + $(this).attr('id'); //this holds the id of the button with the # in front
+        var btnIndex = buttons.findIndex(function (element) {return element.valueOf() == btn.valueOf();}); //this is the index of the button in the array
         if (ready) {
             if(numbers[btnIndex] == currentNumber) {//sets it green if it is the right number
                 if(misses == 0) {
