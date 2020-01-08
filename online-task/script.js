@@ -16,7 +16,6 @@ $(document).ready(function () {
 
     generateNumbers();
    
-    //update("#output", "Click the squares in numerical order!");
     $("#output").css("margin-left", $("button").width());
     $("#output").css("font-size", (10 * 0.5).toString() + "vw");
     $("#directions").css("margin-left", $("button").width());
