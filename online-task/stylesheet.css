@@ -11,6 +11,7 @@
 p {
     float: left;
     width: 0%;
+    display: inline;
 }
 
 body {
@@ -94,9 +95,7 @@ button {
 #directions {
     font-family: sans-serif;
     color: fuchsia;
-}
-
-#directions {
+    
     margin-left: 25vw;
     margin-right: 25vw;
     margin-top: 15vh;
@@ -113,12 +112,12 @@ button {
 
 }
 
-span {
-    float: left;
+#restart {
+
 }
 
-#dir7, #dir8 {
-    
+span {
+    float: left;
 }
 
 #title {

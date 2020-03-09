@@ -71,7 +71,13 @@ $(document).ready(function () {
             go();
         } else {
             var btnIndex = buttons.findIndex(function (element) {return element.valueOf() == btn.valueOf();}); //this is the index of the button in the array
+            if(numbers[btnIndex] == 1 && hasWon) {
+                restart();
+            }
             if (timeRanOut) {
+                if((btn.valueOf() == 1) && hasWon) {
+                    restart();
+                }
                 if(numbers[btnIndex] == currentNumber) {//sets it green if it is the right number
                     $(btn).css("background-color", "rgb(44, 211, 48)");
                     $(btn).css("color", "rgba(0, 0, 0, 1)");
@@ -82,7 +88,6 @@ $(document).ready(function () {
                     if(tempStreak > streak) {
                         streak = tempStreak;
                     }
-          
                     if (currentNumber == 17) {
                         //clearInterval(outputInterval);
                         win();
@@ -91,7 +96,7 @@ $(document).ready(function () {
                     misses++;
                     tempStreak = 0;
                     $(btn).css("background-color", "#ff0000");
-                    setTimeout(function () {if ($(btn).css("background-color") != "rgb(44, 211, 48)") {$(btn).css("background-color", "#e5e5e5");}}, 500); 
+                    setTimeout(function () {if ($(btn).css("background-color") != "rgb(44, 211, 48)") {$(btn).css("background-color", "#e5e5e5");}}, 500);
                 }
             }
         }
@@ -102,6 +107,11 @@ $(document).ready(function () {
 //makes different stuff happens when you win the game
 function win() {
     //$("button").css("font-size", ($("button").width() * 0.25));
+    //$("#b8").append("<button id=\"restart\">Restart</button>");
+    //$("#r3").css("margin-right", "50vw");
+    //$("#d3").css("margin-right", "50vw");
+//    $("#r3").append("<button id=\"restart\">Restart</button>");
+    
     for (var i = 1; i < 17; i++) {
         var button = buttons[numbers.findIndex(function (num) {return num == i;})];
         $(button).css("color", "rgba(0, 0, 0, 1)");
@@ -110,9 +120,11 @@ function win() {
     
     hasWon = true;
     $("#title").css("color", "#00ff00");
+    $("#title").css("background-color", "#50afaf");
+    $("#directions").css("background-color", "#50afaf");
     $("body").css("background-color", "#50afaf");
     $("div").css("background-color", "#50afaf");
-    update("#title", "YOU WIN!");
+    update("#title", "YOU WIN! Press the 1 button to restart");
 }
 
 //allows to change the test of something via its id
@@ -123,6 +135,8 @@ function update(name, str) {
 //makes 16 unique random numbers numbered 1-16 and puts them in the array
 function generateNumbers() {
     //$("body").css("background-color", "red");
+    $("button").css("background-color", "#e5e5e5");
+    $("button").css("color", "rgba(0,0,0,0)");
     
     numbers.push(Math.floor(Math.random() * 16 + 1));
     
@@ -143,6 +157,9 @@ function generateNumbers() {
 function setDimensions() {
     
     if(goVar) {
+        $("#title").css("background-color", "beige");
+        $("#directions").css("background-color", "beige");
+        $("body").css("background-color", "beige");
         $("p").css("width", "50%");
         $("body").css("margin-top", $("button").width() * 0.1);
         $("#output").css("margin-left", $("button").width() * 0.5);
@@ -218,6 +235,17 @@ function go() {
     
     setDimensions();
     
+    //this makes the output flash between two colors
+//    var toggle = true;
+//    var flashing = setInterval(function () {
+//        if(toggle) {
+//            $("body").css("background-color", "#000000");
+//        } else {
+//            $("body").css("background-color", "#ffffff");
+//        }
+//        toggle = !toggle;
+//    }, 100);
+    
     //this is the timer that counts down until the numbers dissappear and you can play
     var time = 0;
     var timeInterval = setInterval(function () {
@@ -235,6 +263,7 @@ function go() {
             $("button").text("E");
             update("#title", "Click the squares in numerical order!");
             clearInterval(timeInterval);
+//            clearInterval(flashing);
             
             var countUp = setInterval(function () {
                 if(hasWon) {
@@ -267,6 +296,46 @@ function go() {
         }
     }, 200);
 }
+
+
+
+function restart() {
+    timeRanOut = false;
+    currentNumber = 1;
+    misses = 0;
+    tempStreak = 0;
+    streak = 0;
+    counter = 0;
+    hasWon = false;
+    var emptyList = [];
+    numbers = emptyList;
+    generateNumbers();
+    go();
+    
+}
+    
+//    $("#restart").css("width", "10vw");
+//    $("#restart").css("height", "7vw");
+//    $("#restart").css("font-size", ($("button").width() * 0.25));
+//    $("#restart").css("background-color", "pink");
+//    $("#restart").css("border-color", "aliceblue");
+//    $("#restart").css("color", "black");
+    
+    
+    
+//    $("#directions").append("<br><br><span id=\"dir1\">1. A 4x4 grid will appear on the left of the screen</span>");
+//    $("#directions").append("<br><span id=\"dir2\">2. Numbers 1-16 will be randomly placed in the grid</span>");
+//    $("#directions").append("<br><span id=\"dir3\">3. A timer will count down from 10 seconds</span>");
+//    $("#directions").append("<br><span id=\"dir4\"> 4. During that time, memorize the order of the numbers</span>");
+//    $("#directions").append("<br><span id=\"dir5\">5. When the timer reaches 0, the numbers will dissapear</span>");
+//    $("#directions").append("<br><span id=\"dir6\">6. Click the squares in the order of the previous numbers</span>");
+//    $("#directions").append("<br><span id=\"dir6a\">&emsp;&emsp; -correctly clicked squares will turn green and the number will reveal</span>");
+//    $("#directions").append("<br><span id=\"dir6b\">&emsp;&emsp; -incorrectly clicked squares will turn red briefly</span>");
+//    $("#directions").append("<br><span id=\"dir7\">7. Reveal all squares as quick and error-free as possible</span>");
+//    $("#directions").append("<br><span id=\"dir7a\">&emsp;&emsp; -errors and a timer will be shown throughout</span>");
+//    $("#directions").append("<br><span id=\"dir8\">8. Click the \"Okay\" button to start the timer and the game</span>");
+//    $("#directions").append("<br><br><button id=\"okay\">Okay</button>");
+
 
 
 /*
