@@ -145,10 +145,13 @@ function setDimensions() {
         $("#output").css("color", "blue");
         $("#directions").css("margin-left", "20vw");
         $("#directions").css("margin-right", "20vw");
-        $("#directions").css("margin-top", "5vh");
+        $("#directions").css("margin-top", "2vh");
+        $("#directions").css("margin-bottom", "2vh");
         $("#directions").css("font-size", (10 * 0.2).toString() + "vw");
         $("#directions").css("color", "#c048d9");
         $("#title").css("color", "#f2004c");
+        $("#title").css("margin-top", "0vh");
+        $("#title").css("margin-bottom", "0vh");
         $("#dir6a").css("font-size", (10 * 0.15).toString() + "vw");
         $("#dir6b").css("font-size", (10 * 0.15).toString() + "vw");
         $("#dir7a").css("font-size", (10 * 0.15).toString() + "vw");
@@ -163,7 +166,8 @@ function setDimensions() {
         $("#output").css("color", "rgba(0,0,0,0)");
         $("#directions").css("margin-left", "20vw");
         $("#directions").css("margin-right", "20vw");
-        $("#directions").css("margin-top", "5vh");
+        $("#directions").css("margin-top", "2vh");
+        $("#directions").css("margin-bottom", "2vh");
         $("#directions").css("font-size", (10 * 0.2).toString() + "vw");
         $("#directions").css("color", "#c048d9");
         $("#dir6a").css("font-size", (10 * 0.15).toString() + "vw");
@@ -181,6 +185,8 @@ function setDimensions() {
         $("#okay").css("background-color", "skyblue");
         $("#okay").css("border-color", "aliceblue");
         $("#title").css("color", "#f2004c");
+        $("#title").css("margin-top", "0vh");
+        $("#title").css("margin-bottom", "0vh");
     }
 }
 
