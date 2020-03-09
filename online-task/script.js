@@ -13,6 +13,7 @@ var misses = 0;
 var streak = 0;
 var counter = 0;
 var goVar = false;
+var tempStreak = 0;
 
 $(document).ready(function () {
 
@@ -72,19 +73,23 @@ $(document).ready(function () {
             var btnIndex = buttons.findIndex(function (element) {return element.valueOf() == btn.valueOf();}); //this is the index of the button in the array
             if (timeRanOut) {
                 if(numbers[btnIndex] == currentNumber) {//sets it green if it is the right number
-                    if(misses == 0) {
-                        streak++;
-                    }
                     $(btn).css("background-color", "rgb(44, 211, 48)");
                     $(btn).css("color", "rgba(0, 0, 0, 1)");
                     update(btn, numbers[btnIndex].toString());
                     currentNumber++;
+                
+                    tempStreak++;
+                    if(tempStreak > streak) {
+                        streak = tempStreak;
+                    }
+          
                     if (currentNumber == 17) {
                         //clearInterval(outputInterval);
                         win();
                     }
                 } else if ($(btn).css("background-color") != "rgb(44, 211, 48)"){//sets it red if it is the wrong number, but only if it is not already green
                     misses++;
+                    tempStreak = 0;
                     $(btn).css("background-color", "#ff0000");
                     setTimeout(function () {if ($(btn).css("background-color") != "rgb(44, 211, 48)") {$(btn).css("background-color", "#e5e5e5");}}, 500); 
                 }
@@ -236,10 +241,10 @@ function go() {
                     clearInterval(countUp);
                 } else {
                     counter += 10;
-                    update("#output","Misses: " + misses.toString() + " Streak: " + streak.toString() + " Time: " + (counter/1000).toFixed(2).toString());
+                    update("#output","Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString());
                     if (counter >= 120000) {
                         counter = 120000;
-                        update("#output","Misses: " + misses.toString() + " Streak: " + streak.toString() + " Time: " + (counter/1000).toFixed(2).toString() + "+");
+                        update("#output","Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString() + "+");
                         clearInterval(countUp);
                     }
                 }
