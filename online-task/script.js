@@ -238,6 +238,7 @@ function go() {
             
             var countUp = setInterval(function () {
                 if(hasWon) {
+                    update("#output","Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString());
                     clearInterval(countUp);
                 } else {
                     counter += 10;
