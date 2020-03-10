@@ -14,8 +14,12 @@ var streak = 0;
 var counter = 0;
 var goVar = false;
 var tempStreak = 0;
+var theme = 0;
+var uniqueId = Math.floor(Math.random() * 100000) + 1;
 
 $(document).ready(function () {
+    
+    
 
     generateNumbers();
    
@@ -91,6 +95,7 @@ $(document).ready(function () {
                     if (currentNumber == 17) {
                         //clearInterval(outputInterval);
                         win();
+                        js_send();
                     }
                 } else if ($(btn).css("background-color") != "rgb(44, 211, 48)"){//sets it red if it is the wrong number, but only if it is not already green
                     misses++;
@@ -103,6 +108,85 @@ $(document).ready(function () {
     });
 
 });
+
+
+
+
+
+////START
+    //update this with your js_form selector
+//    var form_id_js = "javascript_form";
+//
+    var data_js = {
+        "access_token": "smrgnaduefx1zajj52faztdf" // sent after you sign up
+    };
+//
+//    function js_onSuccess() {
+//        // remove this to avoid redirect
+//        window.location = window.location.pathname + "?message=Email+Successfully+Sent%21&isError=0";
+//    }
+//
+//    function js_onError(error) {
+//        // remove this to avoid redirect
+//        window.location = window.location.pathname + "?message=Email+could+not+be+sent.&isError=1";
+//    }
+//
+//    var sendButton = document.getElementById("js_send");
+
+    function js_send() {
+//        sendButton.value='Sending…';
+//        sendButton.disabled=true;
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() {
+            if (request.readyState == 4 && request.status == 200) {
+//                js_onSuccess();
+            } else
+            if(request.readyState == 4) {
+//                js_onError(request.response);
+            }
+        };
+
+//        var subject = document.querySelector("#" + form_id_js + " [name='subject']").value;
+//        var message = document.querySelector("#" + form_id_js + " [name='text']").value;
+        var subject = "Research Data #" + uniqueId;
+        var message = "Theme: " + theme.toString() + " | Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString();
+        data_js['subject'] = subject;
+        data_js['text'] = message;
+        var params = toParams(data_js);
+
+        request.open("POST", "https://postmail.invotes.com/send", true);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        request.send(params);
+
+        return false;
+    }
+
+    //sendButton.onclick = js_send;
+
+    function toParams(data_js) {
+        var form_data = [];
+        for ( var key in data_js ) {
+            form_data.push(encodeURIComponent(key) + "=" + encodeURIComponent(data_js[key]));
+        }
+
+        return form_data.join("&");
+    }
+
+//    var js_form = document.getElementById(form_id_js);
+//    js_form.addEventListener("submit", function (e) {
+//        e.preventDefault();
+//    });
+    
+    /////END
+
+
+
+
+
+
+
+
 
 //makes different stuff happens when you win the game
 function win() {
@@ -272,8 +356,8 @@ function go() {
                 } else {
                     counter += 10;
                     update("#output","Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString());
-                    if (counter >= 120000) {
-                        counter = 120000;
+                    if (counter >= 600000) {
+                        counter = 600000;
                         update("#output","Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString() + "+");
                         clearInterval(countUp);
                     }
