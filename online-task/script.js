@@ -185,9 +185,6 @@ $(document).ready(function () {
 
 
 
-
-
-
 //makes different stuff happens when you win the game
 function win() {
     //$("button").css("font-size", ($("button").width() * 0.25));
@@ -199,7 +196,12 @@ function win() {
     for (var i = 1; i < 17; i++) {
         var button = buttons[numbers.findIndex(function (num) {return num == i;})];
         $(button).css("color", "rgba(0, 0, 0, 1)");
-        update(button, i.toString());
+        if(i == 1) {
+            update(button, "Restart");
+            $(button).css("background-color", "#fcd303");
+        } else {
+            update(button, i.toString());
+        }
     }
     
     hasWon = true;
@@ -208,10 +210,10 @@ function win() {
     $("#directions").css("background-color", "#50afaf");
     $("body").css("background-color", "#50afaf");
     $("div").css("background-color", "#50afaf");
-    update("#title", "YOU WIN! Press the 1 button to restart");
+    update("#title", "YOU WIN! Press the \"Restart\" button to try again");
 }
 
-//allows to change the test of something via its id
+//allows to change the text of something via its id
 function update(name, str) {
     $(name).text(str);
 }
