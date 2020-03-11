@@ -238,9 +238,9 @@ function generateNumbers() {
 //this formats everything good, no hard coded values--------------------------------------------------------------------------------------------
 function setDimensions() {
     if(goVar) {//if start is pressed
-        $("#directions").css("background-color", "LightGray");
+        $("#directions").css("background-color", "rgba(211, 211, 211, 0.75)");
         if(goVar) {
-           $("#output").css("background-color", "LightGray");
+           $("#output").css("background-color", "rgba(211, 211, 211, 0.75)");
         }
         $("body").css("background-image", backgroundImage);
         $("p").css("width", "50%");
@@ -267,7 +267,7 @@ function setDimensions() {
         $("button").css("border-color", "black");
         //$("#output").css("margin-right", $("button").width() * 2);
     } else {//if start is not pressed
-        $("#directions").css("background-color", "LightGray");
+        $("#directions").css("background-color", "rgba(211, 211, 211, 0.75)");
         $("#output").css("background-color", "");
         $("p").css("width", "0%");
         $("body").css("margin-top", $("button").width() * 0.1);
