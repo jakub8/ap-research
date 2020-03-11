@@ -82,6 +82,7 @@ button {
 
 #output { 
     padding: 10;
+    
 }
 
 #okay {
@@ -94,6 +95,7 @@ button {
     font-size: 50;
     word-wrap: break-word;
     color: rgba(0,0,0,0);
+    margin-left: 0;
 }
 
 #directions {
@@ -137,6 +139,29 @@ span {
 #dir1, #dir2, #dir3, #dir4, #dir5, #dir6, #dir7, #dir8 {
     margin-left: 50;
 }
+
+#b4 {
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#d1 {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    
+    border-top: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
+}
+
 
 
 
