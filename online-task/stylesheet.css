@@ -15,7 +15,7 @@ p {
 }
 
 body {
-    background-color: beige;
+    background-image: url('MONKEY%20copy.JPG');
     text-align: center;
     
     margin-top: 0;
@@ -60,6 +60,7 @@ button {
     /*
     background-color: #e5e5e5;
     */
+    background-size: 10vw;
     background-color: rgba(0,0,0,0);
     border-color: rgba(0,0,0,0);
     color: rgba(0,0,0,1);
