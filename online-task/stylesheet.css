@@ -15,7 +15,6 @@ p {
 }
 
 body {
-    background-image: url('MONKEY%20copy.JPG');
     text-align: center;
     
     margin-top: 0;
@@ -81,6 +80,10 @@ button {
     border-right: 1;
 }
 
+#output { 
+    padding: 10;
+}
+
 #okay {
     background-color: skyblue;
     color: black;
@@ -113,16 +116,26 @@ button {
 
 }
 
-#restart {
-
-}
-
 span {
     float: left;
 }
 
-#title {
+#dir9, #dir10, #dir11, #dir12 {
     float: none;
+}
+
+#title {
+    float:inherit;
+    padding-top: 5;
+    padding-bottom: 5;
+}
+
+#dir11 {
+    color: red;
+}
+
+#dir1, #dir2, #dir3, #dir4, #dir5, #dir6, #dir7, #dir8 {
+    margin-left: 50;
 }
 
 
