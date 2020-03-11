@@ -14,7 +14,7 @@ var currentNumber = 1; //correct number to click next
 var misses = 0; //incorrect clicks
 var streak = 0; //max total right in row
 var counter = 0; //time spent doing game
-var goVar = false; //if the user clicked okay
+var goVar = false; //if the user clicked start
 var tempStreak = 0; //current streak
 var theme = Math.floor(Math.random() * 7); //theme implemented 0-control 1-red 2-blue 3-happy 4-angry 5-big 6-small
 var uniqueId = ""; //id of the game
@@ -39,8 +39,28 @@ var aliases = [
     "fglg9hw0pu1kgmyeb6cmj6po", //b18
     "55zahxfkka9p1vxitszn9qo8", //b19
     "9gwikal2v9ymcjhgnpn4cfci", //b20
+    "4n25jhnhsbrizbn0jkt8gm0i", //b21
+    "xpzyfmmjyumrheqekaiytls8", //b22
+    "w63am7sgtrxc1m86r1dtfzo2", //b23
+    "t0tikvqvifz0x8lu4d1cacyt", //b24
+    "ode2svteabofw68kmjv0a40r", //b25
+    "17oe3ld50lqu22650gqoequ8", //b26
+    "cych58wf093rq47ykzddoxu1", //b27
+    "u38ls1dzjcmz7idoiq5dodn4", //b28
+    "n6rve7xfx0uqs63cwg82aaf0", //b29
+    "rc0um5amqafs318awro7ge60", //b30
+    "i8ovnyfou5156nel0yi95eq3", //b31
+    "4ktdari6lmg031878isqmo9s", //b32
+    "qnc0fe3qpv7ywtds30hno82m", //b33
+    "ks5twvecfqt3tefuijk4s698", //b34
+    "xsmzrla9z5wm6pmh4hhpvhfk", //b35
+    "valykt5u5358xwbz4ugurd8q", //b36
+    "xtfexsysxypwavevr94e8vl1", //b37
+    "onaraj881qkfjm41gtuismuf", //b38
+    "3uoma1ozanijh8arhw4213q0", //b39
+    "7tmd8qrqjm5mtzlgfgb9bv3e", //b40
 ];
-var aliasIndex = Math.floor(Math.random() * 20);
+var alias = aliases[Math.floor(Math.random() * 40)];
 var neutralColors = [
     "rgb(245, 245, 245)", "rgb(219, 112, 147)", "rgb(126, 200, 224)", "rgb(245, 245, 245)", 
     "rgb(245, 245, 245)", "rgb(245, 245, 245)", "rgb(245, 245, 245)"
@@ -61,6 +81,8 @@ var neutralColor = neutralColors[theme];
 var correctColor = correctColors[theme];
 var wrongImage = wrongImages[theme];
 var backgroundImage = backgroundImages[theme];
+var record = "";
+var errorStreak = 0;
 
 $(document).ready(function () {
 
@@ -89,8 +111,8 @@ $(document).ready(function () {
     //this will execute whenever a button is clicked--------------------------------------------------------------------------------
     $("button").click(function () {
         var btn = "#" + $(this).attr('id'); //this holds the id of the button with the # in front
-        //if okay is clicked
-        if (btn == "#okay") {
+        //if start is clicked
+        if (btn == "#start") {
             $("button").css("background-color", neutralColor);
             $("button").css("border-color", "slategray");
             goVar = true;
@@ -99,12 +121,8 @@ $(document).ready(function () {
             var btnIndex = buttons.findIndex(function (element) {return element.valueOf() == btn.valueOf();}); //this is the index of the button
             //runs if the game has started
             if (timeRanOut) {
-                //if restart button is clicked
-                if((btn.valueOf() == 1) && hasWon) {
-                    restart();
-                }
                 //if a correct button is clicked
-                if(numbers[btnIndex] == currentNumber) {//sets it green if it is the right number
+                if(numbers[btnIndex] == currentNumber && !hasWon) {//sets it green if it is the right number
                     $(btn).css("color", "rgba(0, 0, 0, 1)");
                     $(btn).css("background-color", correctColor);
                     update(btn, numbers[btnIndex].toString());
@@ -114,13 +132,27 @@ $(document).ready(function () {
                     if(tempStreak > streak) {
                         streak = tempStreak;
                     }
+                    if(errorStreak != 0){
+                        if(currentNumber == 17){
+                            record = record + errorStreak + "E,1C"
+                        } else {
+                            record = record + errorStreak + "E,"
+                        }
+                    } else if (currentNumber == 17){
+                        record = record + tempStreak + "C"
+                    }
                     //checks if last number is clicked
                     if (currentNumber == 17) {
                         win();//runs win sequence
-                        //js_send();//sends data
+                        js_send();//sends data
                     }
-                } else if ($(btn).css("background-color") != correctColor){//sets it red if it is the wrong number, but only if it is not already green
+                    errorStreak = 0;
+                } else if ($(btn).css("background-color") != correctColor && !hasWon){//sets it red if it is the wrong number, but only if it is not already green
+                    if(tempStreak != 0){
+                        record = record + tempStreak + "C,"
+                    }
                     misses++;
+                    errorStreak++;
                     tempStreak = 0;
                     $(btn).css("background-image", wrongImage);
                     
@@ -131,6 +163,10 @@ $(document).ready(function () {
                         }
                     }, 500);
                 }
+                //if restart button is clicked
+                if(($(btn).text() == "Restart") && hasWon) {
+                    restart();
+                }
             }
         }
     });
@@ -140,11 +176,11 @@ $(document).ready(function () {
 function js_send() {
     var request = new XMLHttpRequest();
     var subject = "Research Data #" + uniqueId;
-    var message = "Theme: " + theme.toString() + " | Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString();
+    var message = "Theme: " + theme.toString() + " | Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " +(counter/1000).toFixed(2).toString() + " | Record: " + record;
     var data_js = {
         "subject": subject,
         "text": message,
-        "access_token": "smrgnaduefx1zajj52faztdf" // sent after you sign up
+        "access_token": alias // sent after you sign up
     };
     var params = toParams(data_js);
 
@@ -171,7 +207,6 @@ function win() {
     $(button).css("background-color", "#fcd303");
     //formats stuff
     hasWon = true;
-    $("#title").css("color", "#00ff00");
     update("#title", "YOU WIN! Press the \"Restart\" button to try again");
 }
 
@@ -202,12 +237,10 @@ function generateNumbers() {
 
 //this formats everything good, no hard coded values--------------------------------------------------------------------------------------------
 function setDimensions() {
-    if(goVar) {//if okay is pressed
-        if(theme != 0 && theme != 1 && theme != 2) {
-            $("#directions").css("background-color", "LightGray");
-            if(goVar) {
-               $("#output").css("background-color", "LightGray");
-            }
+    if(goVar) {//if start is pressed
+        $("#directions").css("background-color", "LightGray");
+        if(goVar) {
+           $("#output").css("background-color", "LightGray");
         }
         $("body").css("background-image", backgroundImage);
         $("p").css("width", "50%");
@@ -215,8 +248,8 @@ function setDimensions() {
         $("#output").css("margin-left", $("button").width() * 0.25);
         $("#output").css("font-size", (10 * 0.3).toString() + "vw");
         $("#output").css("color", "black");
-        $("#directions").css("margin-left", "20vw");
-        $("#directions").css("margin-right", "20vw");
+        $("#directions").css("margin-left", "15vw");
+        $("#directions").css("margin-right", "15vw");
         $("#directions").css("margin-top", "2vh");
         $("#directions").css("margin-bottom", "2vh");
         $("#directions").css("font-size", (10 * 0.2).toString() + "vw");
@@ -224,63 +257,73 @@ function setDimensions() {
         $("#title").css("color", "black");
         $("#title").css("margin-top", "0vh");
         $("#title").css("margin-bottom", "0vh");
-        $("#dir6a").css("font-size", (10 * 0.15).toString() + "vw");
-        $("#dir6b").css("font-size", (10 * 0.15).toString() + "vw");
-        $("#dir7a").css("font-size", (10 * 0.15).toString() + "vw");
+        $("#dir9").css("font-size", (10 * 0.15).toString() + "vw");
+        $("#dir10").css("font-size", (10 * 0.15).toString() + "vw");
+        $("#dir11").css("font-size", (10 * 0.15).toString() + "vw");
+        $("#dir12").css("font-size", (10 * 0.1).toString() + "vw");
         $("button").css("width", "10vw");
         $("button").css("height", "10vw");
         $("button").css("font-size", ($("button").width() * 0.25));
         $("button").css("border-color", "black");
-    } else {//if okay is not pressed
-        if(theme != 0 && theme != 1 && theme != 2) {
-            $("#directions").css("background-color", "LightGray");
-        }
+    } else {//if start is not pressed
+        $("#directions").css("background-color", "LightGray");
         $("#output").css("background-color", "");
         $("p").css("width", "0%");
         $("body").css("margin-top", $("button").width() * 0.1);
         $("#output").css("margin-left", $("button").width() * 0.25);
         $("#output").css("font-size", (10 * 0.3).toString() + "vw");
         $("#output").css("color", "rgba(0,0,0,0)");
-        $("#directions").css("margin-left", "20vw");
-        $("#directions").css("margin-right", "20vw");
+        $("#directions").css("margin-left", "15vw");
+        $("#directions").css("margin-right", "15vw");
         $("#directions").css("margin-top", "2vh");
         $("#directions").css("margin-bottom", "2vh");
         $("#directions").css("font-size", (10 * 0.2).toString() + "vw");
         $("#directions").css("color", "black");
-        $("#dir6a").css("font-size", (10 * 0.15).toString() + "vw");
-        $("#dir6b").css("font-size", (10 * 0.15).toString() + "vw");
-        $("#dir7a").css("font-size", (10 * 0.15).toString() + "vw");
-        $("button").css("font-size", ($("button").width() * 0.25));
+        $("#dir9").css("font-size", (10 * 0.15).toString() + "vw");
+        $("#dir10").css("font-size", (10 * 0.15).toString() + "vw");
+        $("#dir11").css("font-size", (10 * 0.15).toString() + "vw");
+        $("#dir12").css("font-size", (10 * 0.1).toString() + "vw");
+        $("#dir1").css("margin-left", "8vw");
+        $("#dir2").css("margin-left", "8vw");
+        $("#dir3").css("margin-left", "8vw");
+        $("#dir4").css("margin-left", "8vw");
+        $("#dir5").css("margin-left", "8vw");
+        $("#dir6").css("margin-left", "8vw");
+        $("#dir7").css("margin-left", "8vw");
+        $("#dir8").css("margin-left", "8vw");
+        $("button").css("font-size", 0);
         $("button").css("color", "rgba(0, 0, 0, 0)");
+        $("#start").css("font-size", ($("button").width() * 0.25));
         $("button").css("width", "0vw");
         $("button").css("height", "0vw");
         $("button").css("background-color", "rgba(0, 0, 0, 0)");
         $("button").css("border-color", "rgba(0, 0, 0, 0)");
-        $("#okay").css("color", "black");
-        $("#okay").css("width", "8vw");
-        $("#okay").css("height", "4vw");
-        $("#okay").css("border-color", "black");
+        $("#start").css("color", "black");
+        $("#start").css("width", "8vw");
+        $("#start").css("height", "4vw");
+        $("#start").css("border-color", "black");
         $("#title").css("color", "black");
         $("#title").css("margin-top", "0vh");
         $("#title").css("margin-bottom", "0vh");
     }
 }
 
-//this is called when user hits okay button, formats stuff-------------------------------------------------------------------------------
+//this is called when user hits start button, formats stuff-------------------------------------------------------------------------------
 function go() {
     //removes directions
-    $("#okay").remove();
+    $("#start").remove();
     $("#dir1").remove();
     $("#dir2").remove();
     $("#dir3").remove();
     $("#dir4").remove();
     $("#dir5").remove();
     $("#dir6").remove();
-    $("#dir6a").remove();
-    $("#dir6b").remove();
     $("#dir7").remove();
-    $("#dir7a").remove();
     $("#dir8").remove();
+    $("#dir9").remove();
+    $("#dir10").remove();
+    $("#dir11").remove();
+    $("#dir12").remove();
     $("br").remove();
     
     $("#directions").css("margin-bottom", "5vh");
@@ -332,12 +375,20 @@ function go() {
     }, 200);
 }
 
-//if restart button is clicked, go back to right after user clicked okay, also reset score-------------------------------------------------------
+//if restart button is clicked, go back to right after user clicked start, also reset score-------------------------------------------------------
 function restart() {
+    alias = aliases[Math.floor(Math.random() * 40)];
+    theme = Math.floor(Math.random() * 7);
+    neutralColor = neutralColors[theme];
+    correctColor = correctColors[theme];
+    wrongImage = wrongImages[theme];
+    backgroundImage = backgroundImages[theme];
+    record = "";
     timeRanOut = false;
     currentNumber = 1;
     misses = 0;
     tempStreak = 0;
+    errorStreak = 0;
     streak = 0;
     counter = 0;
     hasWon = false;
@@ -346,10 +397,6 @@ function restart() {
     generateNumbers();
     go();
 }
-//implement theme
-//in directions say by clicked okay you consent to have your score on this game be used for research
-//turn emails back on
-//use the other emails
 
 
 
