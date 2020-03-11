@@ -1,231 +1,193 @@
 /*eslint-env jquery*/
 /*eslint-env browser*/
 
-var numbers = [];
-var buttons = ["#b1", "#b2", "#b3", "#b4",
-              "#b5", "#b6", "#b7", "#b8",
-              "#b9", "#b10", "#b11", "#b12",
-              "#b13", "#b14", "#b15","#b16"];
-var hasWon = false;
-var timeRanOut = false;
-var currentNumber = 1;
-var misses = 0;
-var streak = 0;
-var counter = 0;
-var goVar = false;
-var tempStreak = 0;
-var theme = 0;
-var uniqueId = Math.floor(Math.random() * 100000) + 1;
+var numbers = []; //holds the number sequence
+var buttons = [ //button ids
+    "#b1", "#b2", "#b3", "#b4",
+    "#b5", "#b6", "#b7", "#b8",
+    "#b9", "#b10", "#b11", "#b12",
+    "#b13", "#b14", "#b15","#b16"
+];
+var hasWon = false; //tells if user won
+var timeRanOut = false; //tells if game has started
+var currentNumber = 1; //correct number to click next
+var misses = 0; //incorrect clicks
+var streak = 0; //max total right in row
+var counter = 0; //time spent doing game
+var goVar = false; //if the user clicked okay
+var tempStreak = 0; //current streak
+var theme = Math.floor(Math.random() * 7); //theme implemented 0-control 1-red 2-blue 3-happy 4-angry 5-big 6-small
+var uniqueId = ""; //id of the game
+var aliases = [
+    "mc6x7iouwum2u27uwr7fnkzv", //b1
+    "nefkk0ak06gnci0lf75gqcni", //b2
+    "y1fnkngfu6pjot0zugwb65rb", //b3
+    "qe0pfocllq49esmb7dttf0wz", //b4
+    "7w8rf0hepbuf4z9u1hbg35hu", //b5
+    "ytj8cdzv852u4mviaid9z36b", //b6
+    "zoq0yhmdg0jd15nkgyfd58w0", //b7
+    "2rvb3sblu1hautg8d41xhfeq", //b8
+    "v4mae5k0gxpag51b36mwlrc6", //b9
+    "o787870k7g5zk1o6h2n826rb", //b10
+    "6pzwezwshidb2u7n6o6ehpax", //b11
+    "ktk7doxeufpptcmphdkxv0dq", //b12
+    "sxel2g0qrh5qd6krk8k6aytb", //b13
+    "ccxafctjy7kfryypy32caw7f", //b14
+    "j4wuka2r9ij062k0by6o1km5", //b15
+    "60jworiy3no25z08xlv9ku1p", //b16
+    "wum5mtmraiobj2xwy9hjoy7s", //b17
+    "fglg9hw0pu1kgmyeb6cmj6po", //b18
+    "55zahxfkka9p1vxitszn9qo8", //b19
+    "9gwikal2v9ymcjhgnpn4cfci", //b20
+];
+var aliasIndex = Math.floor(Math.random() * 20);
+var neutralColors = [
+    "rgb(245, 245, 245)", "rgb(219, 112, 147)", "rgb(126, 200, 224)", "rgb(245, 245, 245)", 
+    "rgb(245, 245, 245)", "rgb(245, 245, 245)", "rgb(245, 245, 245)"
+];
+var correctColors = [
+    "rgb(238, 232, 170)", "rgb(255, 0, 0)", "rgb(0, 0, 205)", "rgb(238, 232, 170)", 
+    "rgb(238, 232, 170)", "rgb(238, 232, 170)", "rgb(238, 232, 170)"
+];
+var wrongImages = [
+    "url(GrayX.png)", "url(RedX.png)", "url(BlueX.png)", "url(GrayX.png)", 
+    "url(GrayX.png)", "url(GrayX.png)", "url(GrayX.png)"
+]
+var backgroundImages = [
+    "", "url(red.png)", "url(blue.png)", "url(happy.png)", 
+    "url(angry.png)", "url(big.png)", "url(small.png)"
+]
+var neutralColor = neutralColors[theme];
+var correctColor = correctColors[theme];
+var wrongImage = wrongImages[theme];
+var backgroundImage = backgroundImages[theme];
 
 $(document).ready(function () {
-    
-    
 
+    //////////////////////////////////////////////////////////////////////////////AT_START
+    //this makes the uniqueid
+    for(var i = 0; i < 8; i++) {
+        var num = Math.floor(Math.random() * 10);
+        uniqueId = uniqueId + num;
+    }
+    //generates the starting numbers
     generateNumbers();
-   
+    //makes the dimensions good
     goVar = true;
     setDimensions();
     goVar = false;
     setDimensions();
+    //////////////////////////////////////////////////////////////////////////////
 
-    
-    
-    //this makes the output flash between two colors
-//    var toggle = true;
-//    var outputInterval = setInterval(function () {
-//        if(toggle && timeRanOut) {
-//            $("#output").css("color", "#ff0000");
-//        } else {
-//            $("#output").css("color", "#b61ee1");
-//        }
-//        toggle = !toggle;
-//    }, 100);
-    
-    
-    
-    
-    
-    
-//------------RESIZE--------------RESIZE-------------------RESIZE--------------RESIZE-------------------RESIZE----------------RESIZE-----------RESIZE
+    // This will execute whenever the window is resized----------------------------------------------------------------------------
     $(window).resize(function () {
-        // This will execute whenever the window is resized
         $(window).height(); // New height
         $(window).width(); // New width
-//        $("#directions").css("margin-left", $("button").width());
-//        $("#output").css("margin-left", $("button").width());
-//        $("p").css("margin-left", $("button").width() * 0.1);
-//        $("body").css("margin-top", $("button").width() * 0.1);
-        setDimensions();
-        
-//        if(hasWon) {
-//            $("#output").css("font-size", (10 * 0.5).toString() + "vw");
-//        } else {
-//            $("#output").css("font-size", (10 * 0.25).toString() + "vw");
-//        }
-//        $("button").css("font-size", ($("button").width() * 0.25));
+        setDimensions(); //resizes the dimensions
     });
     
-//------------click-----------click----------------click---------------------click----------------click--------------click-------------click----------
+    //this will execute whenever a button is clicked--------------------------------------------------------------------------------
     $("button").click(function () {
         var btn = "#" + $(this).attr('id'); //this holds the id of the button with the # in front
+        //if okay is clicked
         if (btn == "#okay") {
-            $("button").css("background-color", "#e5e5e5");
+            $("button").css("background-color", neutralColor);
             $("button").css("border-color", "slategray");
             goVar = true;
             go();
         } else {
-            var btnIndex = buttons.findIndex(function (element) {return element.valueOf() == btn.valueOf();}); //this is the index of the button in the array
-            if(numbers[btnIndex] == 1 && hasWon) {
-                restart();
-            }
+            var btnIndex = buttons.findIndex(function (element) {return element.valueOf() == btn.valueOf();}); //this is the index of the button
+            //runs if the game has started
             if (timeRanOut) {
+                //if restart button is clicked
                 if((btn.valueOf() == 1) && hasWon) {
                     restart();
                 }
+                //if a correct button is clicked
                 if(numbers[btnIndex] == currentNumber) {//sets it green if it is the right number
-                    $(btn).css("background-color", "rgb(44, 211, 48)");
                     $(btn).css("color", "rgba(0, 0, 0, 1)");
+                    $(btn).css("background-color", correctColor);
                     update(btn, numbers[btnIndex].toString());
                     currentNumber++;
-                
                     tempStreak++;
+                    //sets the new streak if needed
                     if(tempStreak > streak) {
                         streak = tempStreak;
                     }
+                    //checks if last number is clicked
                     if (currentNumber == 17) {
-                        //clearInterval(outputInterval);
-                        win();
-                        js_send();
+                        win();//runs win sequence
+                        //js_send();//sends data
                     }
-                } else if ($(btn).css("background-color") != "rgb(44, 211, 48)"){//sets it red if it is the wrong number, but only if it is not already green
+                } else if ($(btn).css("background-color") != correctColor){//sets it red if it is the wrong number, but only if it is not already green
                     misses++;
                     tempStreak = 0;
-                    $(btn).css("background-color", "#ff0000");
-                    setTimeout(function () {if ($(btn).css("background-color") != "rgb(44, 211, 48)") {$(btn).css("background-color", "#e5e5e5");}}, 500);
+                    $(btn).css("background-image", wrongImage);
+                    
+                    setTimeout(function () {
+                        if ($(btn).css("background-color") != correctColor) {
+                            $(btn).css("background-image", "");
+                            $(btn).css("background-color", neutralColor);
+                        }
+                    }, 500);
                 }
             }
         }
     });
-
 });
 
-
-
-
-
-////START
-    //update this with your js_form selector
-//    var form_id_js = "javascript_form";
-//
+//sends the email-------------------------------------------------------------------------------------------------------------
+function js_send() {
+    var request = new XMLHttpRequest();
+    var subject = "Research Data #" + uniqueId;
+    var message = "Theme: " + theme.toString() + " | Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString();
     var data_js = {
+        "subject": subject,
+        "text": message,
         "access_token": "smrgnaduefx1zajj52faztdf" // sent after you sign up
     };
-//
-//    function js_onSuccess() {
-//        // remove this to avoid redirect
-//        window.location = window.location.pathname + "?message=Email+Successfully+Sent%21&isError=0";
-//    }
-//
-//    function js_onError(error) {
-//        // remove this to avoid redirect
-//        window.location = window.location.pathname + "?message=Email+could+not+be+sent.&isError=1";
-//    }
-//
-//    var sendButton = document.getElementById("js_send");
+    var params = toParams(data_js);
 
-    function js_send() {
-//        sendButton.value='Sending…';
-//        sendButton.disabled=true;
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function() {
-            if (request.readyState == 4 && request.status == 200) {
-//                js_onSuccess();
-            } else
-            if(request.readyState == 4) {
-//                js_onError(request.response);
-            }
-        };
+    request.open("POST", "https://postmail.invotes.com/send", true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.send(params);
+}
 
-//        var subject = document.querySelector("#" + form_id_js + " [name='subject']").value;
-//        var message = document.querySelector("#" + form_id_js + " [name='text']").value;
-        var subject = "Research Data #" + uniqueId;
-        var message = "Theme: " + theme.toString() + " | Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString();
-        data_js['subject'] = subject;
-        data_js['text'] = message;
-        var params = toParams(data_js);
-
-        request.open("POST", "https://postmail.invotes.com/send", true);
-        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-        request.send(params);
-
-        return false;
+//parses the data so it can be read into email--------------------------------------------------------------------------------------------
+function toParams(data_js) {
+    var form_data = [];
+    for ( var key in data_js ) {
+        form_data.push(encodeURIComponent(key) + "=" + encodeURIComponent(data_js[key]));
     }
 
-    //sendButton.onclick = js_send;
+    return form_data.join("&");
+}
 
-    function toParams(data_js) {
-        var form_data = [];
-        for ( var key in data_js ) {
-            form_data.push(encodeURIComponent(key) + "=" + encodeURIComponent(data_js[key]));
-        }
-
-        return form_data.join("&");
-    }
-
-//    var js_form = document.getElementById(form_id_js);
-//    js_form.addEventListener("submit", function (e) {
-//        e.preventDefault();
-//    });
-    
-    /////END
-
-
-
-
-
-
-//makes different stuff happens when you win the game
+//formats elements differently if user has won--------------------------------------------------------------------------------------------
 function win() {
-    //$("button").css("font-size", ($("button").width() * 0.25));
-    //$("#b8").append("<button id=\"restart\">Restart</button>");
-    //$("#r3").css("margin-right", "50vw");
-    //$("#d3").css("margin-right", "50vw");
-//    $("#r3").append("<button id=\"restart\">Restart</button>");
-    
-    for (var i = 1; i < 17; i++) {
-        var button = buttons[numbers.findIndex(function (num) {return num == i;})];
-        $(button).css("color", "rgba(0, 0, 0, 1)");
-        if(i == 1) {
-            update(button, "Restart");
-            $(button).css("background-color", "#fcd303");
-        } else {
-            update(button, i.toString());
-        }
-    }
-    
+    //finds the 1 button and turns it into the restart button
+    var button = buttons[numbers.findIndex(function (num) {return num == 1;})];
+    update(button, "Restart");
+    $(button).css("background-color", "#fcd303");
+    //formats stuff
     hasWon = true;
     $("#title").css("color", "#00ff00");
-    $("#title").css("background-color", "#50afaf");
-    $("#directions").css("background-color", "#50afaf");
-    $("body").css("background-color", "#50afaf");
-    $("div").css("background-color", "#50afaf");
     update("#title", "YOU WIN! Press the \"Restart\" button to try again");
 }
 
-//allows to change the text of something via its id
+//allows to change the text of something via its id--------------------------------------------------------------------------------------------
 function update(name, str) {
     $(name).text(str);
 }
 
-//makes 16 unique random numbers numbered 1-16 and puts them in the array
+//makes 16 unique random numbers numbered 1-16 and puts them in the array---------------------------------------------------------------------
 function generateNumbers() {
-    //$("body").css("background-color", "red");
-    $("button").css("background-color", "#e5e5e5");
+    //sets the text to invisible and color to grey
     $("button").css("color", "rgba(0,0,0,0)");
+    $("button").css("background-color", neutralColor);
     
     numbers.push(Math.floor(Math.random() * 16 + 1));
-    
+    //checks to see if the number is already in the array, if not, add it
     for (var i = 0; i < 15; i++) {
         var flag = true;
         while (flag) {
@@ -238,26 +200,28 @@ function generateNumbers() {
     }
 }
 
-
-
+//this formats everything good, no hard coded values--------------------------------------------------------------------------------------------
 function setDimensions() {
-    
-    if(goVar) {
-        $("#title").css("background-color", "beige");
-        $("#directions").css("background-color", "beige");
-        $("body").css("background-color", "beige");
+    if(goVar) {//if okay is pressed
+        if(theme != 0 && theme != 1 && theme != 2) {
+            $("#directions").css("background-color", "LightGray");
+            if(goVar) {
+               $("#output").css("background-color", "LightGray");
+            }
+        }
+        $("body").css("background-image", backgroundImage);
         $("p").css("width", "50%");
         $("body").css("margin-top", $("button").width() * 0.1);
-        $("#output").css("margin-left", $("button").width() * 0.5);
+        $("#output").css("margin-left", $("button").width() * 0.25);
         $("#output").css("font-size", (10 * 0.3).toString() + "vw");
-        $("#output").css("color", "blue");
+        $("#output").css("color", "black");
         $("#directions").css("margin-left", "20vw");
         $("#directions").css("margin-right", "20vw");
         $("#directions").css("margin-top", "2vh");
         $("#directions").css("margin-bottom", "2vh");
         $("#directions").css("font-size", (10 * 0.2).toString() + "vw");
-        $("#directions").css("color", "#c048d9");
-        $("#title").css("color", "#f2004c");
+        $("#directions").css("color", "black");
+        $("#title").css("color", "black");
         $("#title").css("margin-top", "0vh");
         $("#title").css("margin-bottom", "0vh");
         $("#dir6a").css("font-size", (10 * 0.15).toString() + "vw");
@@ -266,10 +230,15 @@ function setDimensions() {
         $("button").css("width", "10vw");
         $("button").css("height", "10vw");
         $("button").css("font-size", ($("button").width() * 0.25));
-    } else {
+        $("button").css("border-color", "black");
+    } else {//if okay is not pressed
+        if(theme != 0 && theme != 1 && theme != 2) {
+            $("#directions").css("background-color", "LightGray");
+        }
+        $("#output").css("background-color", "");
         $("p").css("width", "0%");
         $("body").css("margin-top", $("button").width() * 0.1);
-        $("#output").css("margin-left", $("button").width() * 0.5);
+        $("#output").css("margin-left", $("button").width() * 0.25);
         $("#output").css("font-size", (10 * 0.3).toString() + "vw");
         $("#output").css("color", "rgba(0,0,0,0)");
         $("#directions").css("margin-left", "20vw");
@@ -277,7 +246,7 @@ function setDimensions() {
         $("#directions").css("margin-top", "2vh");
         $("#directions").css("margin-bottom", "2vh");
         $("#directions").css("font-size", (10 * 0.2).toString() + "vw");
-        $("#directions").css("color", "#c048d9");
+        $("#directions").css("color", "black");
         $("#dir6a").css("font-size", (10 * 0.15).toString() + "vw");
         $("#dir6b").css("font-size", (10 * 0.15).toString() + "vw");
         $("#dir7a").css("font-size", (10 * 0.15).toString() + "vw");
@@ -290,17 +259,16 @@ function setDimensions() {
         $("#okay").css("color", "black");
         $("#okay").css("width", "8vw");
         $("#okay").css("height", "4vw");
-        $("#okay").css("background-color", "skyblue");
-        $("#okay").css("border-color", "aliceblue");
-        $("#title").css("color", "#f2004c");
+        $("#okay").css("border-color", "black");
+        $("#title").css("color", "black");
         $("#title").css("margin-top", "0vh");
         $("#title").css("margin-bottom", "0vh");
     }
 }
 
-
+//this is called when user hits okay button, formats stuff-------------------------------------------------------------------------------
 function go() {
-    
+    //removes directions
     $("#okay").remove();
     $("#dir1").remove();
     $("#dir2").remove();
@@ -320,37 +288,19 @@ function go() {
     update("#title", "Memorize!");
     
     setDimensions();
-    
-    //this makes the output flash between two colors
-//    var toggle = true;
-//    var flashing = setInterval(function () {
-//        if(toggle) {
-//            $("body").css("background-color", "#000000");
-//        } else {
-//            $("body").css("background-color", "#ffffff");
-//        }
-//        toggle = !toggle;
-//    }, 100);
-    
-    //this is the timer that counts down until the numbers dissappear and you can play
+    //starts the countdown timer
     var time = 0;
     var timeInterval = setInterval(function () {
-        
         update("#output", (10 - (time / 1000)).toFixed(2).toString());
         time += 10;
-
         if (time >= 10000) {
             timeRanOut = true;
             $("#output").css("font-size", (10 * 0.25).toString() + "vw");
-            
-            //$("button").css("font-size", ($("button").width() * 0.15));
-
             $("button").css("color", "rgba(0, 0, 0, 0)");
             $("button").text("E");
             update("#title", "Click the squares in numerical order!");
             clearInterval(timeInterval);
-//            clearInterval(flashing);
-            
+            //starts the timer to record how long it takes to win
             var countUp = setInterval(function () {
                 if(hasWon) {
                     update("#output","Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString());
@@ -358,16 +308,15 @@ function go() {
                 } else {
                     counter += 10;
                     update("#output","Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString());
-                    if (counter >= 600000) {
-                        counter = 600000;
+                    //stop counting at 5 minutes
+                    if (counter >= 300000) {
+                        counter = 300000;
                         update("#output","Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString() + "+");
-                        clearInterval(countUp);
                     }
                 }
             }, 10);
         }
     }, 10);
-
 
     //this makes the numbers appear in the buttons one after the other in numberical order
     var index = 0;
@@ -383,8 +332,7 @@ function go() {
     }, 200);
 }
 
-
-
+//if restart button is clicked, go back to right after user clicked okay, also reset score-------------------------------------------------------
 function restart() {
     timeRanOut = false;
     currentNumber = 1;
@@ -397,66 +345,12 @@ function restart() {
     numbers = emptyList;
     generateNumbers();
     go();
-    
 }
-    
-//    $("#restart").css("width", "10vw");
-//    $("#restart").css("height", "7vw");
-//    $("#restart").css("font-size", ($("button").width() * 0.25));
-//    $("#restart").css("background-color", "pink");
-//    $("#restart").css("border-color", "aliceblue");
-//    $("#restart").css("color", "black");
-    
-    
-    
-//    $("#directions").append("<br><br><span id=\"dir1\">1. A 4x4 grid will appear on the left of the screen</span>");
-//    $("#directions").append("<br><span id=\"dir2\">2. Numbers 1-16 will be randomly placed in the grid</span>");
-//    $("#directions").append("<br><span id=\"dir3\">3. A timer will count down from 10 seconds</span>");
-//    $("#directions").append("<br><span id=\"dir4\"> 4. During that time, memorize the order of the numbers</span>");
-//    $("#directions").append("<br><span id=\"dir5\">5. When the timer reaches 0, the numbers will dissapear</span>");
-//    $("#directions").append("<br><span id=\"dir6\">6. Click the squares in the order of the previous numbers</span>");
-//    $("#directions").append("<br><span id=\"dir6a\">&emsp;&emsp; -correctly clicked squares will turn green and the number will reveal</span>");
-//    $("#directions").append("<br><span id=\"dir6b\">&emsp;&emsp; -incorrectly clicked squares will turn red briefly</span>");
-//    $("#directions").append("<br><span id=\"dir7\">7. Reveal all squares as quick and error-free as possible</span>");
-//    $("#directions").append("<br><span id=\"dir7a\">&emsp;&emsp; -errors and a timer will be shown throughout</span>");
-//    $("#directions").append("<br><span id=\"dir8\">8. Click the \"Okay\" button to start the timer and the game</span>");
-//    $("#directions").append("<br><br><button id=\"okay\">Okay</button>");
+//implement theme
+//in directions say by clicked okay you consent to have your score on this game be used for research
+//turn emails back on
+//use the other emails
 
-
-
-/*
-function setNumbers() {
-    num1 = Math.floor(Math.random() * 13 + 1);
-    num2 = Math.floor(Math.random() * 13 + 1);
-    answer = num1 * num2;
-    
-    $("#num1").text(num1);
-    $("#num2").text(num2);
-}
-
-
-function checkAnswer() {
-    guess = parseInt($("#guess").val());
-
-    if (guess == answer) {
-        progress++;
-        if (progress > 4) {
-            $("#prompt").text("YOU ARE A MATHEMATICAL MASTER!");
-        } else {
-            response = "CORRECT!";
-            setNumbers();  
-        }
-    } else {
-        if (progress <= 4) {
-            response = "WRONG!";
-            setNumbers();  
-            progress--;
-        }
-    }
-
-    $("#response").text(response);
-}
-*/
 
 
 
