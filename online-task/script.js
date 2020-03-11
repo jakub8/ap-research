@@ -245,8 +245,8 @@ function setDimensions() {
         $("body").css("background-image", backgroundImage);
         $("p").css("width", "50%");
         $("body").css("margin-top", $("button").width() * 0.1);
-        $("#output").css("margin-left", $("button").width() * 0.25);
-        $("#output").css("font-size", (10 * 0.3).toString() + "vw");
+        $("#output").css("margin-left", 0);
+        $("#output").css("font-size", (10 * 0.25).toString() + "vw");
         $("#output").css("color", "black");
         $("#directions").css("margin-left", "15vw");
         $("#directions").css("margin-right", "15vw");
@@ -265,13 +265,14 @@ function setDimensions() {
         $("button").css("height", "10vw");
         $("button").css("font-size", ($("button").width() * 0.25));
         $("button").css("border-color", "black");
+        //$("#output").css("margin-right", $("button").width() * 2);
     } else {//if start is not pressed
         $("#directions").css("background-color", "LightGray");
         $("#output").css("background-color", "");
         $("p").css("width", "0%");
         $("body").css("margin-top", $("button").width() * 0.1);
-        $("#output").css("margin-left", $("button").width() * 0.25);
-        $("#output").css("font-size", (10 * 0.3).toString() + "vw");
+        $("#output").css("margin-left", 0);
+        $("#output").css("font-size", (10 * 0.25).toString() + "vw");
         $("#output").css("color", "rgba(0,0,0,0)");
         $("#directions").css("margin-left", "15vw");
         $("#directions").css("margin-right", "15vw");
@@ -294,6 +295,7 @@ function setDimensions() {
         $("button").css("font-size", 0);
         $("button").css("color", "rgba(0, 0, 0, 0)");
         $("#start").css("font-size", ($("button").width() * 0.25));
+        //$("#output").css("margin-right", $("button").width() * 2);
         $("button").css("width", "0vw");
         $("button").css("height", "0vw");
         $("button").css("background-color", "rgba(0, 0, 0, 0)");
@@ -345,6 +347,7 @@ function go() {
             clearInterval(timeInterval);
             //starts the timer to record how long it takes to win
             var countUp = setInterval(function () {
+                $("#output").css("font-size", (10 * 0.25).toString() + "vw");
                 if(hasWon) {
                     update("#output","Misses: " + misses.toString() + " | Top Streak: " + streak.toString() + " | Time: " + (counter/1000).toFixed(2).toString());
                     clearInterval(countUp);
