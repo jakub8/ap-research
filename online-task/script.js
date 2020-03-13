@@ -144,7 +144,7 @@ $(document).ready(function () {
                     //checks if last number is clicked
                     if (currentNumber == 17) {
                         win();//runs win sequence
-                        //js_send();//sends data
+                        js_send();//sends data
                     }
                     errorStreak = 0;
                 } else if ($(btn).css("background-color") != correctColor && !hasWon){//sets it red if it is the wrong number, but only if it is not already green
